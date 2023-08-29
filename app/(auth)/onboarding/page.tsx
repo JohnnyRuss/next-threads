@@ -1,11 +1,12 @@
 import React from "react";
-import { AccountProfile } from "@/components/forms";
+import { OnboardingForm } from "@/components/forms";
 import { currentUser } from "@clerk/nextjs";
 
 interface pageT {}
 
 const OnBoarding: React.FC<pageT> = async () => {
   const user = await currentUser();
+
   const userInfo = {
     _id: "",
     username: "",
@@ -31,7 +32,7 @@ const OnBoarding: React.FC<pageT> = async () => {
       </p>
 
       <section className="mt-9 bg-dark-2 p-10">
-        <AccountProfile user={userData} btnTitle="Continue" />
+        <OnboardingForm user={userData} btnTitle="Continue" />
       </section>
     </main>
   );
