@@ -45,3 +45,30 @@ export async function getUser(params: { userId: string }): Promise<UserT> {
     throw error;
   }
 }
+
+export const getUserThreads = async (args: { userId: string }) => {
+  try {
+    await ConnectToDB();
+
+    const threads = await User.findOne({ id: args.userId }).populate({
+      path: "threads",
+      populate: [
+        {
+          path: "children",
+          populate: {
+            path: "author",
+            select: "name image id _id",
+          },
+        },
+        {
+          path: "author",
+          select: "id _id name username image",
+        },
+      ],
+    });
+
+    return threads;
+  } catch (error) {
+    throw new Error("Failed to get threads.");
+  }
+};

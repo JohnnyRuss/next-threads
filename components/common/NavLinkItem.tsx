@@ -8,6 +8,7 @@ import { BaseNavLinkT } from "@/types";
 import { isActiveLink } from "@/utils";
 
 interface NavLinkItemT {
+  userId: string;
   link: BaseNavLinkT;
   linkClasses?: string;
   labelStyles?: string;
@@ -19,9 +20,12 @@ const NavLinkItem: React.FC<NavLinkItemT> = ({
   linkClasses,
   labelStyles,
   imgSize = 24,
+  userId,
 }) => {
   const pathname = usePathname();
   const isActive = isActiveLink({ url: link.route, pathname });
+
+  if (link.route === "profile") link.route = `${link.route}/${userId}`;
 
   return (
     <Link

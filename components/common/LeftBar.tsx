@@ -1,12 +1,13 @@
 import React from "react";
+import { currentUser } from "@clerk/nextjs";
 
 import { sidebarLinks } from "@/config/constants";
 import { ClerkSignOut } from "@/components/clerk";
 import NavLinkItem from "@/components/common/NavLinkItem";
 
-interface LeftBarT {}
+const LeftBar: React.FC = async () => {
+  const user = await currentUser();
 
-const LeftBar: React.FC<LeftBarT> = () => {
   return (
     <aside className="custom-scrollbar leftsidebar">
       <div className="flex flex-col w-full flex-1 gap-4 px-6">
@@ -16,6 +17,7 @@ const LeftBar: React.FC<LeftBarT> = () => {
             link={link}
             linkClasses="leftsidebar_link"
             labelStyles="text-light-1 max-lg:hidden"
+            userId={user?.id || ""}
           />
         ))}
       </div>
