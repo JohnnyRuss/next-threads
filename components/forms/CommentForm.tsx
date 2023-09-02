@@ -62,13 +62,14 @@ const CommentForm: React.FC<CommentFormT> = ({
             formControlClasses="bg-transparent border-none"
             label={() => (
               <>
-                <Image
-                  src={currentUserImage}
-                  width={48}
-                  height={48}
-                  alt="profile image"
-                  className="rounded-full object-cover"
-                />
+                <figure className="w-12 h-12 rounded-full overflow-hidden relative">
+                  <Image
+                    src={currentUserImage}
+                    fill
+                    alt="profile image"
+                    className="object-cover"
+                  />
+                </figure>
               </>
             )}
             controlledField={(field) => (

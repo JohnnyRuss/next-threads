@@ -25,13 +25,13 @@ const ThreadCard: React.FC<ThreadCardT> = ({
           <figure className="flex flex-col items-center">
             <Link
               href={`/profile/${thread.author.id}`}
-              className="relative h-11 w-11"
+              className="relative h-11 w-11 rounded-full overflow-hidden"
             >
               <Image
                 src={thread.author.image}
                 fill
                 alt={thread.author.username}
-                className="object-contain cursor-pointer rounded-full"
+                className="object-cover cursor-pointer "
               />
             </Link>
 

@@ -25,7 +25,8 @@ const NavLinkItem: React.FC<NavLinkItemT> = ({
   const pathname = usePathname();
   const isActive = isActiveLink({ url: link.route, pathname });
 
-  if (link.route === "profile") link.route = `${link.route}/${userId}`;
+  if (link.route === "/profile" && userId)
+    link.route = `${link.route}/${userId}`;
 
   return (
     <Link

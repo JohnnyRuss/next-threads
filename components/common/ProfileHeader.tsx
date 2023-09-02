@@ -23,7 +23,7 @@ const ProfileHeader: React.FC<ProfileHeaderT> = ({
     <div className="flex flex-col w-full justify-start">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <figure className="relative h-20 w-20">
+          <figure className="relative h-20 w-20 overflow-hidden rounded-full">
             <Image src={imgUrl} fill alt={username} className="object-cover" />
           </figure>
 
