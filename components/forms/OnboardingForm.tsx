@@ -32,7 +32,7 @@ const OnboardingForm: React.FC<OnboardingFormT> = ({ user, btnTitle }) => {
 
   const [files, setFiles] = useState<File[]>([]);
   const { startUpload } = useUploadThing("media");
-
+  console.log(user);
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
     defaultValues: {

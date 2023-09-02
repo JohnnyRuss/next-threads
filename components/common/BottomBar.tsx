@@ -1,14 +1,7 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-
 import { sidebarLinks } from "@/config/constants";
-
 import NavLinkItem from "@/components/common/NavLinkItem";
 
-interface BottomBarT {}
-
-const BottomBar: React.FC<BottomBarT> = () => {
+const BottomBar: React.FC = () => {
   return (
     <footer className="bottombar">
       <div className="bottombar_container">

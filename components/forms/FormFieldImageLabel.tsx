@@ -14,7 +14,7 @@ const FormFieldImageLabel: React.FC<FormFieldImageLabelT> = ({ src }) => {
           width={96}
           height={96}
           priority
-          className="object-contain rounded-full"
+          className="object-contain rounded-full min-w-[96px]"
         />
       ) : (
         <Image

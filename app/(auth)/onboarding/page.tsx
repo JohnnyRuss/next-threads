@@ -1,19 +1,15 @@
 import React from "react";
-import { OnboardingForm } from "@/components/forms";
+import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
+import { getUser } from "@/database/actions/user.actions";
+import { OnboardingForm } from "@/components/forms";
 
-interface pageT {}
-
-const OnBoarding: React.FC<pageT> = async () => {
+const OnBoarding: React.FC = async () => {
   const user = await currentUser();
+  if (!user) return null;
 
-  const userInfo = {
-    _id: "",
-    username: "",
-    name: "",
-    bio: "",
-    image: "",
-  };
+  const userInfo = await getUser({ userId: user.id });
+  if (userInfo?.onboarded) redirect("/");
 
   const userData = {
     id: user?.id || "",

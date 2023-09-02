@@ -2,6 +2,7 @@ import React from "react";
 import { AllThreadT } from "@/types/thread";
 import Link from "next/link";
 import Image from "next/image";
+import { formatDateString } from "@/utils";
 
 interface ThreadCardT {
   thread: AllThreadT;
@@ -98,7 +99,29 @@ const ThreadCard: React.FC<ThreadCardT> = ({
             </div>
           </div>
         </div>
+        {/* // 1.delete thread // 2.show replies num */}
       </div>
+
+      {!isComment && thread.community && (
+        <Link
+          href={`/communities/${thread.community.id}`}
+          className="mt-5 flex items-center"
+        >
+          <p className="text-subtle-medium text-gray-1">
+            {formatDateString(thread.createdAt)}
+            &mdash;
+            {thread.community.name} Community
+          </p>
+
+          <Image
+            src={thread.community.image}
+            alt={thread.community.name}
+            width={14}
+            height={14}
+            className="ml-1 rounded-full object-cover min-h-[14px] min-w-[14px]"
+          />
+        </Link>
+      )}
     </article>
   );
 };

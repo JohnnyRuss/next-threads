@@ -162,7 +162,7 @@ export const POST = async (request: Request) => {
   if (eventType === "organization.deleted") {
     try {
       const { id } = e?.data;
-
+      console.log("deleted organization 👀💥");
       await deleteCommunity({ communityId: id as string });
 
       return NextResponse.json(

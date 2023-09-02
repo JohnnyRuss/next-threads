@@ -2,6 +2,8 @@
 
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useOrganization } from "@clerk/nextjs";
+
 import { Form } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -15,6 +17,7 @@ import { createThread } from "@/database/actions/thread.actions";
 
 import Field from "./FormField";
 
+import { CreateThreadParamsT } from "@/types/thread";
 interface PostThreadT {
   userId: string;
 }
@@ -22,6 +25,8 @@ interface PostThreadT {
 const PostThread: React.FC<PostThreadT> = ({ userId }) => {
   const router = useRouter();
   const pathname = usePathname();
+
+  const { organization } = useOrganization();
 
   const form = useForm<z.infer<typeof ThreadValidation>>({
     resolver: zodResolver(ThreadValidation),
@@ -32,12 +37,16 @@ const PostThread: React.FC<PostThreadT> = ({ userId }) => {
 
   async function onSubmit(values: z.infer<typeof ThreadValidation>) {
     try {
-      await createThread({
+      const threadParams: CreateThreadParamsT = {
         author: userId,
         communityId: null,
         path: pathname,
         text: values.thread,
-      });
+      };
+
+      if (organization) threadParams.communityId = organization.id;
+
+      await createThread(threadParams);
 
       router.push("/");
     } catch (error) {

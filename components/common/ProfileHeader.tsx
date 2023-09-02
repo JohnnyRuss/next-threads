@@ -9,6 +9,7 @@ interface ProfileHeaderT {
   username: string;
   imgUrl: string;
   bio: string;
+  type?: string;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderT> = ({
@@ -18,6 +19,7 @@ const ProfileHeader: React.FC<ProfileHeaderT> = ({
   username,
   bio,
   imgUrl,
+  type,
 }) => {
   return (
     <div className="flex flex-col w-full justify-start">

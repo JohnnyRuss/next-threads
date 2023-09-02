@@ -34,10 +34,9 @@ export async function getUser(params: { userId: string }): Promise<UserT> {
   try {
     await ConnectToDB();
 
-    const user = await User.findOne({ id: params.userId });
-    // .populate({
-    //   path: "communities",
-    // });
+    const user = await User.findOne({ id: params.userId }).populate({
+      path: "communities",
+    });
 
     if (!user) throw new Error("user does not exists");
 
@@ -54,6 +53,10 @@ export const getUserThreads = async (args: { userId: string }) => {
     const threads = await User.findOne({ id: args.userId }).populate({
       path: "threads",
       populate: [
+        {
+          path: "community",
+          select: "name id image _id",
+        },
         {
           path: "children",
           populate: {
