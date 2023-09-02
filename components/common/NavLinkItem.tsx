@@ -8,7 +8,7 @@ import { BaseNavLinkT } from "@/types";
 import { isActiveLink } from "@/utils";
 
 interface NavLinkItemT {
-  userId: string;
+  userId?: string;
   link: BaseNavLinkT;
   linkClasses?: string;
   labelStyles?: string;
