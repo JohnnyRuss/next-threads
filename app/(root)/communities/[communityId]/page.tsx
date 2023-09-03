@@ -2,13 +2,14 @@ import React from "react";
 import Image from "next/image";
 import { currentUser } from "@clerk/nextjs";
 
-import { ProfileHeader, ThreadsTab } from "@/components/common";
 import { UserCard } from "@/components/cards";
+import { ProfileHeader, ThreadsTab } from "@/components/common";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 
 import { communityTabs } from "@/config/constants";
 import { fetchCommunityDetails } from "@/database/actions/community.actions";
 
+import { UserT } from "@/types/user";
 interface pageT {
   params: {
     communityId: string;
@@ -19,7 +20,6 @@ const Community: React.FC<pageT> = async ({ params: { communityId } }) => {
   if (!communityId) return null;
 
   const user = await currentUser();
-
   if (!user) return null;
 
   const communityDetails = await fetchCommunityDetails({ communityId });
@@ -69,8 +69,12 @@ const Community: React.FC<pageT> = async ({ params: { communityId } }) => {
 
           <TabsContent value="members" className="w-full text-light-1">
             <section className="mt-9 flex flex-col gap-10">
-              {communityDetails?.members.map((member: any) => (
-                <UserCard key={member._id} user={member} personType="user" />
+              {communityDetails.members.map((member: UserT) => (
+                <UserCard
+                  key={`member__${member.id}`}
+                  user={member}
+                  personType="user"
+                />
               ))}
             </section>
           </TabsContent>

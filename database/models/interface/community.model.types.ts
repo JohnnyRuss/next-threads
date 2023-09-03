@@ -7,8 +7,10 @@ export interface CommunityT extends Document {
   image: string;
   bio: string;
   createdBy: Schema.Types.ObjectId;
-  onboarded: boolean;
+  threads: [Schema.Types.ObjectId];
   members: [Schema.Types.ObjectId];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CommunityMethodsT {}

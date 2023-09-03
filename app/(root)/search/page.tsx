@@ -3,10 +3,15 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
 
 import { UserCard } from "@/components/cards";
+import { SearchBar } from "@/components/common";
 
 import { getUser, getUsers } from "@/database/actions/user.actions";
 
-const page: React.FC = async () => {
+interface SearchT {
+  searchParams: { search: string };
+}
+
+const Search: React.FC<SearchT> = async ({ searchParams: { search } }) => {
   const user = await currentUser();
 
   if (!user) return null;
@@ -15,7 +20,7 @@ const page: React.FC = async () => {
   if (!userInfo.onboarded) return redirect("onboarding");
 
   const data = await getUsers({
-    searchStr: "",
+    searchStr: search,
     userId: user.id,
     page: 1,
     limit: 20,
@@ -26,7 +31,7 @@ const page: React.FC = async () => {
     <section>
       <h1 className="head-text mb-10">Search</h1>
 
-      <div>searchbar</div>
+      <SearchBar />
 
       <div className="mt-14 flex flex-col gap-9">
         {data.users.length === 0 ? (
@@ -43,4 +48,4 @@ const page: React.FC = async () => {
   );
 };
 
-export default page;
+export default Search;

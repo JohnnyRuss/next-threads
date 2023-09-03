@@ -5,10 +5,10 @@ import { Thread, User, Community } from "@/database/models";
 import { CreateThreadParamsT, GetAllThreadsParamsT } from "@/types/thread";
 import ConnectToDB from "../mongoose";
 
+ConnectToDB();
+
 export async function createThread(params: CreateThreadParamsT): Promise<void> {
   try {
-    await ConnectToDB();
-
     const communityIdObject = await Community.findOne(
       { id: params.communityId },
       { _id: 1 }
@@ -37,8 +37,6 @@ export async function createThread(params: CreateThreadParamsT): Promise<void> {
 
 export async function getThreads(params: GetAllThreadsParamsT) {
   try {
-    await ConnectToDB();
-
     const skip = (params.pageNumber - 1) * params.limit;
 
     const threadsQuery = Thread.find({ parentId: { $in: [null, undefined] } })
@@ -75,8 +73,6 @@ export const getThread = async ({
   threadId: string;
 }): Promise<any> => {
   try {
-    await ConnectToDB();
-
     const thread = await Thread.findById(threadId)
       .populate({
         path: "author",
@@ -115,8 +111,6 @@ export const addComment = async (args: {
   path: string;
 }) => {
   try {
-    ConnectToDB();
-
     const originalThread = await Thread.findById(args.threadId);
 
     if (!originalThread) throw new Error("Thread not found");
@@ -142,8 +136,6 @@ export async function deleteThread(args: {
   path: string;
 }): Promise<void> {
   try {
-    ConnectToDB();
-
     const mainThread = await Thread.findById(args.id).populate(
       "author community"
     );
@@ -198,15 +190,14 @@ export async function deleteThread(args: {
 async function fetchAllChildThreads(args: {
   threadId: string;
 }): Promise<any[]> {
-  ConnectToDB();
-
   const childThreads = await Thread.find({ parentId: args.threadId });
 
   const descendantThreads = [];
   for (const childThread of childThreads) {
-    const descendants = await fetchAllChildThreads({
-      threadId: childThread._id,
-    });
+    const descendants = await Thread.find({ parentId: childThread._id });
+    // const descendants = await fetchAllChildThreads({
+    //   threadId: childThread._id,
+    // });
     descendantThreads.push(childThread, ...descendants);
   }
 

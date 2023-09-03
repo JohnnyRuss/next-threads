@@ -1,6 +1,8 @@
 import { UserT } from "@/types/user";
 
 export interface ThreadT {
+  id: string;
+  _id: string;
   text: string;
   author: string;
   community: string;
@@ -17,7 +19,7 @@ type AllThreadUserT = Omit<
 
 type AllThreadChildrenUserT = Omit<
   UserT,
-  "id" | "username" | "bio" | "onboarded" | "threads" | "communities"
+  "username" | "bio" | "onboarded" | "threads" | "communities"
 >;
 
 interface AllThreadsChildrenT extends Omit<ThreadT, "author"> {

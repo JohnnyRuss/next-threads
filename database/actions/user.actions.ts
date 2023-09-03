@@ -8,10 +8,10 @@ import { UpdateUserParamsT } from "@/types/user";
 
 import { revalidatePath } from "next/cache";
 
+ConnectToDB();
+
 export async function updateUser(params: UpdateUserParamsT): Promise<void> {
   try {
-    await ConnectToDB();
-
     await User.findOneAndUpdate(
       { id: params.userId },
       {
@@ -32,8 +32,6 @@ export async function updateUser(params: UpdateUserParamsT): Promise<void> {
 
 export async function getUser(params: { userId: string }): Promise<UserT> {
   try {
-    await ConnectToDB();
-
     const user = await User.findOne({ id: params.userId }).populate({
       path: "communities",
     });
@@ -48,8 +46,6 @@ export async function getUser(params: { userId: string }): Promise<UserT> {
 
 export const getUserThreads = async (args: { userId: string }) => {
   try {
-    await ConnectToDB();
-
     const threads = await User.findOne({ id: args.userId }).populate({
       path: "threads",
       populate: [
@@ -85,8 +81,6 @@ export const getUsers = async (args: {
   sort?: SortOrder;
 }): Promise<{ hasNextPage: boolean; users: UserT[] }> => {
   try {
-    await ConnectToDB();
-
     const limit = args.limit || 20;
     const page = args.page || 1;
     const skip = (page - 1) * limit;
@@ -117,8 +111,6 @@ export const getUsers = async (args: {
 
 export const getActivity = async (args: { userId: string }) => {
   try {
-    await ConnectToDB();
-
     const userThreads = await Thread.find({ author: args.userId });
 
     const childrenIds = userThreads.reduce(

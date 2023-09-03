@@ -4,6 +4,8 @@ import { FilterQuery, SortOrder } from "mongoose";
 import { Thread, User, Community } from "@/database/models";
 import ConnectToDB from "@/database/mongoose";
 
+ConnectToDB();
+
 export async function createCommunity(args: {
   id: string;
   name: string;
@@ -13,8 +15,6 @@ export async function createCommunity(args: {
   createdById: string;
 }) {
   try {
-    await ConnectToDB();
-
     const user = await User.findOne({ id: args.createdById });
 
     if (!user) throw new Error("User not found");
@@ -42,15 +42,12 @@ export async function createCommunity(args: {
 
 export async function fetchCommunityDetails(args: { communityId: string }) {
   try {
-    await ConnectToDB();
-
     const communityDetails = await Community.findOne({
       id: args.communityId,
     }).populate([
       "createdBy",
       {
         path: "members",
-        model: User,
         select: "name username image _id id",
       },
     ]);
@@ -64,23 +61,21 @@ export async function fetchCommunityDetails(args: { communityId: string }) {
 
 export async function fetchCommunityPosts(args: { communityId: string }) {
   try {
-    await ConnectToDB();
-
     const communityPosts = await Community.findById(args.communityId).populate({
       path: "threads",
-      model: Thread,
       populate: [
         {
           path: "author",
-          model: User,
+          select: "name image id",
+        },
+        {
+          path: "community",
           select: "name image id",
         },
         {
           path: "children",
-          model: Thread,
           populate: {
             path: "author",
-            model: User,
             select: "image _id",
           },
         },
@@ -101,8 +96,6 @@ export async function fetchCommunities(args: {
   sort?: SortOrder;
 }) {
   try {
-    await ConnectToDB();
-
     const searchStr = args.searchStr || "";
     const sort = args.sort || "desc";
 
@@ -145,8 +138,6 @@ export async function addMemberToCommunity(args: {
   memberId: string;
 }) {
   try {
-    await ConnectToDB();
-
     const community = await Community.findOne({ id: args.communityId });
 
     if (!community) throw new Error("Community not found");
@@ -176,8 +167,6 @@ export async function removeUserFromCommunity(args: {
   communityId: string;
 }) {
   try {
-    await ConnectToDB();
-
     const userIdObject = await User.findOne({ id: args.userId }, { _id: 1 });
     const communityIdObject = await Community.findOne(
       { id: args.communityId },
@@ -212,8 +201,6 @@ export async function updateCommunityInfo(args: {
   image: string;
 }) {
   try {
-    await ConnectToDB();
-
     const updatedCommunity = await Community.findOneAndUpdate(
       { id: args.communityId },
       { name: args.name, username: args.username, image: args.image }
@@ -230,8 +217,6 @@ export async function updateCommunityInfo(args: {
 
 export async function deleteCommunity(args: { communityId: string }) {
   try {
-    await ConnectToDB();
-
     const deletedCommunity = await Community.findOneAndDelete({
       id: args.communityId,
     });

@@ -4,12 +4,13 @@ import { redirect } from "next/navigation";
 import { ThreadCard } from "@/components/cards";
 
 import { getUserThreads } from "@/database/actions/user.actions";
+import { fetchCommunityPosts } from "@/database/actions/community.actions";
 
 import { AllThreadT } from "@/types/thread";
 interface ThreadsTabT {
   currentUserId: string;
   accountId: string;
-  accountType: string;
+  accountType: "community" | "user";
 }
 
 const ThreadsTab: React.FC<ThreadsTabT> = async ({
@@ -17,7 +18,12 @@ const ThreadsTab: React.FC<ThreadsTabT> = async ({
   accountType,
   currentUserId,
 }) => {
-  let data = await getUserThreads({ userId: accountId });
+  let data: any;
+
+  if (accountType === "community")
+    data = await fetchCommunityPosts({ communityId: accountId });
+  else if (accountType === "user")
+    data = await getUserThreads({ userId: accountId });
 
   if (!data) return redirect("/");
 
