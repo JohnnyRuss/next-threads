@@ -26,6 +26,12 @@ const ThreadSchema = new Schema<ThreadT, ThreadModelT, ThreadMethodsT>(
         ref: "Thread",
       },
     ],
+    reactions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );

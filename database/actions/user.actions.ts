@@ -30,13 +30,23 @@ export async function updateUser(params: UpdateUserParamsT): Promise<void> {
   }
 }
 
-export async function getUser(params: { userId: string }): Promise<UserT> {
+export async function getUserShortInfo(params: { userId: string }) {
+  try {
+    const user = await User.findOne({ id: params.userId }).select(
+      "image username name bio id onboarded"
+    );
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUser(params: { userId: string }) {
   try {
     const user = await User.findOne({ id: params.userId }).populate({
       path: "communities",
     });
-
-    if (!user) throw new Error("user does not exists");
 
     return user;
   } catch (error) {
@@ -54,15 +64,15 @@ export const getUserThreads = async (args: { userId: string }) => {
           select: "name id image _id",
         },
         {
+          path: "author",
+          select: "id _id name username image",
+        },
+        {
           path: "children",
           populate: {
             path: "author",
             select: "name image id _id",
           },
-        },
-        {
-          path: "author",
-          select: "id _id name username image",
         },
       ],
     });

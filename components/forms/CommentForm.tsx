@@ -27,7 +27,6 @@ const CommentForm: React.FC<CommentFormT> = ({
   currentUserImage,
   threadId,
 }) => {
-  const router = useRouter();
   const pathname = usePathname();
 
   const form = useForm<z.infer<typeof CommentValidation>>({

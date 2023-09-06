@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Thread, User, Community } from "@/database/models";
 import { CreateThreadParamsT, GetAllThreadsParamsT } from "@/types/thread";
 import ConnectToDB from "../mongoose";
+import { ObjectId } from "mongoose";
 
 ConnectToDB();
 
@@ -87,11 +88,11 @@ export const getThread = async ({
         populate: [
           {
             path: "author",
-            select: "_id id name image parentId",
+            select: "_id id name image",
           },
           {
             path: "children",
-            populate: { path: "author", select: "_id id name image parentId" },
+            populate: { path: "author", select: "_id id name image" },
           },
         ],
       });
@@ -122,6 +123,9 @@ export const addComment = async (args: {
     });
 
     originalThread.children.push(newThread._id);
+    await User.findByIdAndUpdate(args.userId, {
+      $push: { threads: newThread._id },
+    });
 
     await originalThread.save();
 
@@ -202,4 +206,28 @@ async function fetchAllChildThreads(args: {
   }
 
   return descendantThreads;
+}
+
+export async function reactOnThread(args: {
+  userId: string;
+  threadId: string;
+  path: string;
+}) {
+  try {
+    const thread = await Thread.findById(args.threadId);
+
+    thread.reactions = thread.reactions.some(
+      (reaction: ObjectId) => reaction.toString() === args.userId
+    )
+      ? thread.reactions.filter(
+          (reaction: ObjectId) => reaction.toString() !== args.userId
+        )
+      : [...thread.reactions, args.userId];
+
+    await thread.save();
+
+    revalidatePath(args.path);
+  } catch (error) {
+    throw error;
+  }
 }

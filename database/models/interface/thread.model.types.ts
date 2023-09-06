@@ -6,6 +6,7 @@ export interface ThreadT extends Document {
   community: Schema.Types.ObjectId;
   parentId: string;
   children: Schema.Types.ObjectId[];
+  reactions: Schema.Types.ObjectId[];
 }
 
 export interface ThreadMethodsT {}

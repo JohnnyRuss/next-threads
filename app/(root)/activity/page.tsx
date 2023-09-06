@@ -3,17 +3,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
-import { getUser, getActivity } from "@/database/actions/user.actions";
+import { getUserShortInfo, getActivity } from "@/database/actions/user.actions";
+import { UserActivityT, UserShortInfoT } from "@/types/user";
 
 const page: React.FC = async () => {
   const user = await currentUser();
+  if (!user) return redirect("/sign-in");
 
-  if (!user) return null;
+  const userInfo = (await getUserShortInfo({
+    userId: user.id,
+  })) as UserShortInfoT | null;
+  if (!userInfo?.onboarded) return redirect("/onboarding");
 
-  const userInfo = await getUser({ userId: user.id });
-  if (!userInfo.onboarded) return redirect("onboarding");
-
-  const activities = await getActivity({ userId: userInfo._id });
+  const activities: UserActivityT[] | Omit<any, never>[] = await getActivity({
+    userId: userInfo._id,
+  });
 
   return (
     <section>

@@ -66,17 +66,17 @@ export async function fetchCommunityPosts(args: { communityId: string }) {
       populate: [
         {
           path: "author",
-          select: "name image id",
+          select: "name image id _id",
         },
         {
           path: "community",
-          select: "name image id",
+          select: "name image id _id",
         },
         {
           path: "children",
           populate: {
             path: "author",
-            select: "image _id",
+            select: "image _id id",
           },
         },
       ],

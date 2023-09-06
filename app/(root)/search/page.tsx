@@ -1,12 +1,12 @@
 import React from "react";
-import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
 
 import { UserCard } from "@/components/cards";
 import { SearchBar } from "@/components/common";
 
-import { getUser, getUsers } from "@/database/actions/user.actions";
+import { getUsers } from "@/database/actions/user.actions";
 
+import { UserT } from "@/types/user";
 interface SearchT {
   searchParams: { search: string };
 }
@@ -14,18 +14,13 @@ interface SearchT {
 const Search: React.FC<SearchT> = async ({ searchParams: { search } }) => {
   const user = await currentUser();
 
-  if (!user) return null;
-
-  const userInfo = await getUser({ userId: user.id });
-  if (!userInfo.onboarded) return redirect("onboarding");
-
-  const data = await getUsers({
+  const data = (await getUsers({
     searchStr: search,
-    userId: user.id,
+    userId: user?.id || "",
     page: 1,
     limit: 20,
     sort: "desc",
-  });
+  })) as { users: UserT[]; hasNextPage: boolean };
 
   return (
     <section>
@@ -34,11 +29,11 @@ const Search: React.FC<SearchT> = async ({ searchParams: { search } }) => {
       <SearchBar />
 
       <div className="mt-14 flex flex-col gap-9">
-        {data.users.length === 0 ? (
+        {data?.users.length === 0 ? (
           <p className="no-result">No Users</p>
         ) : (
           <>
-            {data.users.map((person) => (
+            {data?.users.map((person) => (
               <UserCard key={person._id} user={person} personType="User" />
             ))}
           </>

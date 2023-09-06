@@ -14,7 +14,7 @@ const ClerkSignOut: React.FC<ClerkSignOutT> = ({ withCaption = false }) => {
 
   return (
     <SignedIn>
-      <SignOutButton signOutCallback={() => router.push("/sign-in")}>
+      <SignOutButton signOutCallback={() => router.push("/")}>
         <div className={`flex cursor-pointer ${withCaption && "gap-4 p-4"}`}>
           <Image src="/assets/logout.svg" alt="logout" width={24} height={24} />
 

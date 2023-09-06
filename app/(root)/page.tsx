@@ -2,19 +2,21 @@ import React from "react";
 import { currentUser } from "@clerk/nextjs";
 
 import { getThreads } from "@/database/actions/thread.actions";
+import { getUserShortInfo } from "@/database/actions/user.actions";
 
 import { ThreadCard } from "@/components/cards";
 
-import { AllThreadT } from "@/types/thread";
-interface HomeT {}
+import { ThreadCardInfoT } from "@/types/thread";
 
-const Home: React.FC<HomeT> = async () => {
+const Home: React.FC = async () => {
   const user = await currentUser();
+
+  const userInfo = await getUserShortInfo({ userId: user?.id || "" });
 
   const data = (await getThreads({
     pageNumber: 1,
     limit: 20,
-  })) as { threads: AllThreadT[]; hasNextPage: boolean };
+  })) as { threads: ThreadCardInfoT[]; hasNextPage: boolean };
 
   return (
     <>
@@ -28,7 +30,7 @@ const Home: React.FC<HomeT> = async () => {
             {data.threads.map((thread) => (
               <ThreadCard
                 key={thread._id}
-                currentUserId={user?.id || ""}
+                currentUserId={userInfo?._id?.toString() || ""}
                 thread={thread}
               />
             ))}

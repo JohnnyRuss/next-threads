@@ -9,8 +9,8 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/config/constants";
 
 import { getUser } from "@/database/actions/user.actions";
-import { UserT } from "@/types/user";
 
+import { UserInfoT } from "@/types/user";
 interface pageT {
   params: {
     userId: string;
@@ -22,20 +22,20 @@ const Profile: React.FC<pageT> = async ({ params: { userId } }) => {
 
   const user = await currentUser();
 
-  if (!user) return null;
-
-  const userInfo = (await getUser({ userId: userId })) as UserT;
-  if (!userInfo.onboarded) return redirect("onboarding");
+  const userInfo: UserInfoT | null = (await getUser({ userId })) as UserInfoT;
+  if (!userInfo) return redirect("/");
+  else if (user && userInfo.id === userId && !userInfo?.onboarded)
+    return redirect("/onboarding");
 
   return (
     <section>
       <ProfileHeader
         accountId={userId}
-        userId={userInfo._id}
-        imgUrl={userInfo.image}
-        name={userInfo.name}
-        username={userInfo.username}
-        bio={userInfo.bio}
+        userId={userInfo?._id || ""}
+        imgUrl={userInfo?.image || ""}
+        name={userInfo?.name || ""}
+        username={userInfo?.username || ""}
+        bio={userInfo?.bio || ""}
       />
 
       <div className="mt-9">
@@ -68,9 +68,9 @@ const Profile: React.FC<pageT> = async ({ params: { userId } }) => {
               className="w-full text-light-1"
             >
               <ThreadsTab
-                currentUserId={user.id}
-                accountId={userInfo.id}
+                accountId={userInfo?.id || ""}
                 accountType="user"
+                currentUserId={userInfo._id.toString()}
               />
             </TabsContent>
           ))}

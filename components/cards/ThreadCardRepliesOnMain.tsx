@@ -1,10 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AllThreadsChildrenT } from "@/types/thread";
 
+import { ThreadCardInfoChildrenT } from "@/types/thread";
 interface ThreadCardRepliesOnMainT {
-  threadChildren: AllThreadsChildrenT[];
+  threadChildren: ThreadCardInfoChildrenT[] | [];
   threadId: string;
 }
 
@@ -18,7 +18,7 @@ const ThreadCardRepliesOnMain: React.FC<ThreadCardRepliesOnMainT> = ({
 
   const lastTwoReplyAuthorImages = threadChildren
     .filter((child) => lastTwoReplyAuthorIds.includes(child._id))
-    .map((child) => child.author.image);
+    .map((child) => child?.author?.image);
 
   return (
     <div className="absolute bottom-0 flex items-center gap-4 w-max left-0">

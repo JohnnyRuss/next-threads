@@ -13,15 +13,12 @@ const SearchBar: React.FC<SearchBarT> = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
 
-    if (searchParams.get("search") && !search)
-      setSearch(searchParams.get("search") || "");
-
     const timeoutId = setTimeout(() => {
-      if (!search) {
-        searchParams.delete("search");
-      } else {
-        searchParams.set("search", search);
-      }
+      if (!search) searchParams.delete("search");
+      else searchParams.set("search", search);
+
+      if (searchParams.get("search") && !search)
+        setSearch(searchParams.get("search") || "");
 
       router.push(`${window.location.pathname}?${searchParams.toString()}`);
     }, 500);

@@ -20,9 +20,9 @@ import { updateUser } from "@/database/actions/user.actions";
 import Field from "./FormField";
 import FormFieldImageLabel from "./FormFieldImageLabel";
 
-import { UserInfoT } from "@/types/user";
+import { UserShortInfoT } from "@/types/user";
 interface OnboardingFormT {
-  user: UserInfoT;
+  user: UserShortInfoT;
   btnTitle: string;
 }
 

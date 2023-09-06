@@ -1,14 +1,11 @@
 import React from "react";
-import { redirect } from "next/navigation";
-import { currentUser } from "@clerk/nextjs";
 
 import { CommunityCard } from "@/components/cards";
 import { SearchBar } from "@/components/common";
 
-import { getUser } from "@/database/actions/user.actions";
 import { fetchCommunities } from "@/database/actions/community.actions";
 
-import { CommunityCardT } from "@/types/community";
+import { AllCommunitiesT } from "@/types/community";
 interface CommunitiesT {
   searchParams: { search: string };
 }
@@ -16,19 +13,12 @@ interface CommunitiesT {
 const Communities: React.FC<CommunitiesT> = async ({
   searchParams: { search },
 }) => {
-  const user = await currentUser();
-
-  if (!user) return null;
-
-  const userInfo = await getUser({ userId: user.id });
-  if (!userInfo.onboarded) return redirect("onboarding");
-
-  const data = await fetchCommunities({
+  const data = (await fetchCommunities({
     searchStr: search,
     page: 1,
     limit: 10,
     sort: "desc",
-  });
+  })) as { communities: AllCommunitiesT[]; hasNextPage: boolean };
 
   return (
     <section>
@@ -41,10 +31,7 @@ const Communities: React.FC<CommunitiesT> = async ({
           <p className="no-result">No Communities</p>
         ) : (
           data.communities.map((community) => (
-            <CommunityCard
-              key={community.id}
-              community={community as CommunityCardT}
-            />
+            <CommunityCard key={community.id} community={community} />
           ))
         )}
       </div>

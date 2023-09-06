@@ -30,72 +30,86 @@ const RightBar: React.FC<RightBarT> = async () => {
   return (
     <aside className="custom-scrollbar rightsidebar">
       <div className="flex flex-1 flex-col justify-start">
-        <h3 className="text-heading4-medium text-light-1">
+        <h3 className="text-heading4-medium text-light-1 w-full text-center">
           Suggested Communities
         </h3>
 
         <div className="mt-5 flex flex-col gap-4">
-          {communities.communities.map((community) => (
-            <div
-              key={`rightbar-${community._id}`}
-              className="flex items-center gap-3"
-            >
-              <figure className="relative w-10 h-10 rounded-full overflow-hidden">
-                <Image
-                  src={community.image}
-                  fill
-                  alt={community.name}
-                  className="object-cover"
-                />
-              </figure>
-
-              <div className="flex flex-col text-light-1 text-sm">
-                <span className="text-ellipsis">{community.name}</span>
-                <span className="text-xs text-gray-500">Public Community</span>
-              </div>
-
-              <Button
-                className="bg-primary-500 h-8 px-2 ml-auto cursor-none disabled:opacity-100"
-                disabled={true}
+          {communities.communities.length > 0 ? (
+            communities.communities.map((community) => (
+              <div
+                key={`rightbar-${community._id}`}
+                className="flex items-center gap-3"
               >
-                Join
-              </Button>
-            </div>
-          ))}
+                <figure className="relative w-10 h-10 rounded-full overflow-hidden">
+                  <Image
+                    src={community.image}
+                    fill
+                    alt={community.name}
+                    className="object-cover"
+                  />
+                </figure>
+
+                <div className="flex flex-col text-light-1 text-sm">
+                  <span className="text-ellipsis">{community.name}</span>
+                  <span className="text-xs text-gray-500">
+                    Public Community
+                  </span>
+                </div>
+
+                <Button
+                  className="bg-primary-500 h-8 px-2 ml-auto cursor-none disabled:opacity-100"
+                  disabled={true}
+                >
+                  Join
+                </Button>
+              </div>
+            ))
+          ) : (
+            <p className="no-result">No Communities Found</p>
+          )}
         </div>
       </div>
 
       <div className="flex flex-1 flex-col justify-start">
-        <h3 className="text-heading4-medium text-light-1">Suggested Users</h3>
+        <h3 className="text-heading4-medium text-light-1 w-full text-center">
+          Suggested Users
+        </h3>
 
         <div className="mt-5 flex flex-col gap-4">
-          {users.users.map((user) => (
-            <div
-              key={`rightbar-${user._id}`}
-              className="flex items-center gap-3"
-            >
-              <figure className="relative w-10 h-10 rounded-full overflow-hidden">
-                <Image
-                  src={user.image}
-                  fill
-                  alt={user.name}
-                  className="object-cover"
-                />
-              </figure>
-
-              <div className="flex flex-col text-light-1 text-sm">
-                <span className="text-ellipsis">{user.name}</span>
-                <span className="text-xs text-gray-500">@{user.username}</span>
-              </div>
-
-              <Button
-                className="bg-primary-500 h-8 px-2 ml-auto cursor-none disabled:opacity-100"
-                disabled={true}
+          {users.users.length > 0 ? (
+            users.users.map((user) => (
+              <div
+                key={`rightbar-${user._id}`}
+                className="flex items-center gap-3"
               >
-                Follow
-              </Button>
-            </div>
-          ))}
+                <figure className="relative w-10 h-10 rounded-full overflow-hidden">
+                  <Image
+                    src={user.image}
+                    fill
+                    alt={user.name}
+                    className="object-cover"
+                  />
+                </figure>
+
+                <div className="flex flex-col text-light-1 text-sm">
+                  <span className="text-ellipsis">{user.name}</span>
+                  <span className="text-xs text-gray-500">
+                    @{user.username}
+                  </span>
+                </div>
+
+                <Button
+                  className="bg-primary-500 h-8 px-2 ml-auto cursor-none disabled:opacity-100"
+                  disabled={true}
+                >
+                  Follow
+                </Button>
+              </div>
+            ))
+          ) : (
+            <p className="no-result">No Users Found</p>
+          )}
         </div>
       </div>
     </aside>

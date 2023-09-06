@@ -1,23 +1,28 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
-import { getUser } from "@/database/actions/user.actions";
+import { getUserShortInfo } from "@/database/actions/user.actions";
 import { OnboardingForm } from "@/components/forms";
+
+import { UserShortInfoT } from "@/types/user";
 
 const OnBoarding: React.FC = async () => {
   const user = await currentUser();
   if (!user) return null;
 
-  const userInfo = await getUser({ userId: user.id });
+  const userInfo: UserShortInfoT | null = await getUserShortInfo({
+    userId: user.id,
+  });
   if (userInfo?.onboarded) redirect("/");
 
-  const userData = {
+  const userData: UserShortInfoT = {
     id: user?.id || "",
-    objectId: userInfo._id || "",
-    username: userInfo.username || user?.username || "",
-    name: userInfo.name || user?.firstName || "",
-    bio: userInfo.bio || "",
-    image: userInfo.image || user?.imageUrl || "",
+    _id: userInfo?._id || "",
+    username: userInfo?.username || user?.username || "",
+    name: userInfo?.name || user?.firstName || "",
+    bio: userInfo?.bio || "",
+    image: userInfo?.image || user?.imageUrl || "",
+    onboarded: userInfo?.onboarded || false,
   };
 
   return (

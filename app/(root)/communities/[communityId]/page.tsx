@@ -8,8 +8,10 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 
 import { communityTabs } from "@/config/constants";
 import { fetchCommunityDetails } from "@/database/actions/community.actions";
+import { getUserShortInfo } from "@/database/actions/user.actions";
 
-import { UserT } from "@/types/user";
+import { CommunityDetailsT } from "@/types/community";
+import { UserShortInfoT } from "@/types/user";
 interface pageT {
   params: {
     communityId: string;
@@ -20,9 +22,14 @@ const Community: React.FC<pageT> = async ({ params: { communityId } }) => {
   if (!communityId) return null;
 
   const user = await currentUser();
-  if (!user) return null;
 
-  const communityDetails = await fetchCommunityDetails({ communityId });
+  const userInfo = (await getUserShortInfo({
+    userId: user?.id || "",
+  })) as UserShortInfoT;
+
+  const communityDetails = (await fetchCommunityDetails({
+    communityId,
+  })) as CommunityDetailsT;
 
   return (
     <section>
@@ -61,31 +68,35 @@ const Community: React.FC<pageT> = async ({ params: { communityId } }) => {
 
           <TabsContent value="threads" className="w-full text-light-1">
             <ThreadsTab
-              currentUserId={user.id}
               accountId={communityDetails._id}
               accountType="community"
+              currentUserId={userInfo?._id?.toString() || ""}
             />
           </TabsContent>
 
-          <TabsContent value="members" className="w-full text-light-1">
-            <section className="mt-9 flex flex-col gap-10">
-              {communityDetails.members.map((member: UserT) => (
-                <UserCard
-                  key={`member__${member.id}`}
-                  user={member}
-                  personType="user"
+          {user && (
+            <>
+              <TabsContent value="members" className="w-full text-light-1">
+                <section className="mt-9 flex flex-col gap-10">
+                  {communityDetails.members.map((member) => (
+                    <UserCard
+                      key={`member__${member.id}`}
+                      user={member}
+                      personType="user"
+                    />
+                  ))}
+                </section>
+              </TabsContent>
+
+              <TabsContent value="requests" className="w-full text-light-1">
+                <ThreadsTab
+                  accountId={communityDetails._id}
+                  accountType="community"
+                  currentUserId={userInfo?._id?.toString() || ""}
                 />
-              ))}
-            </section>
-          </TabsContent>
-
-          <TabsContent value="requests" className="w-full text-light-1">
-            <ThreadsTab
-              currentUserId={user.id}
-              accountId={communityDetails._id}
-              accountType="community"
-            />
-          </TabsContent>
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </section>

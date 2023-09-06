@@ -2,9 +2,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { UserT } from "@/types/user";
+import { UserCardInfoT } from "@/types/user";
 interface UserCardT {
-  user: UserT;
+  user: UserCardInfoT;
   personType: string;
 }
 

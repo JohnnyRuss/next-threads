@@ -1,7 +1,6 @@
 import { UserT } from "@/types/user";
 
 export interface ThreadT {
-  id: string;
   _id: string;
   text: string;
   author: string;
@@ -10,20 +9,28 @@ export interface ThreadT {
   children: string[];
   createdAt: string;
   updatedAt: string;
+  reactions: string[];
 }
 
-type AllThreadUserT = Omit<
-  UserT,
-  "bio" | "onboarded" | "threads" | "communities"
->;
+interface ThreadUserT {
+  _id: string;
+  id: string;
+  image: string;
+  name?: string;
+}
 
-type AllThreadChildrenUserT = Omit<
-  UserT,
-  "username" | "bio" | "onboarded" | "threads" | "communities"
->;
+interface ThreadCommunityT {
+  _id: string;
+  id: string;
+  name: string;
+  image: string;
+}
 
-interface AllThreadsChildrenT extends Omit<ThreadT, "author"> {
-  author: AllThreadChildrenUserT;
+interface ThreadsChildrenT extends ThreadT {
+  _id: string;
+  community?: ThreadCommunityT;
+  author: ThreadUserT;
+  children: ThreadCardInfoChildrenT[];
 }
 
 interface CommunityT {
@@ -32,15 +39,27 @@ interface CommunityT {
   image: string;
 }
 
-export interface AllThreadT {
+export interface ActiveThreadT {
   _id: string;
   text: string;
-  community: CommunityT | null;
   parentId: string;
   createdAt: string;
   updatedAt: string;
-  author: AllThreadUserT;
-  children: AllThreadsChildrenT[];
+  author: ThreadUserT;
+  community: ThreadCommunityT | null | undefined;
+  children: ThreadsChildrenT[];
+  reactions: string[];
+}
+
+export interface AllThreadT {
+  _id: string;
+  text: string;
+  parentId: string;
+  createdAt: string;
+  updatedAt: string;
+  author: ThreadUserT;
+  community: ThreadCommunityT | null;
+  children: ThreadsChildrenT[];
 }
 
 // ACTIONS
@@ -55,4 +74,20 @@ export interface CreateThreadParamsT {
 export interface GetAllThreadsParamsT {
   pageNumber: number;
   limit: number;
+}
+
+// CARD
+export interface ThreadCardInfoChildrenT {
+  _id: string;
+  author: ThreadUserT;
+}
+
+export interface ThreadCardInfoT {
+  author: ThreadUserT;
+  text: string;
+  _id: string;
+  createdAt: string;
+  community?: ThreadCommunityT;
+  children: ThreadCardInfoChildrenT[];
+  reactions: string[];
 }

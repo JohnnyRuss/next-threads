@@ -6,11 +6,12 @@ import { ThreadCard } from "@/components/cards";
 import { getUserThreads } from "@/database/actions/user.actions";
 import { fetchCommunityPosts } from "@/database/actions/community.actions";
 
-import { AllThreadT } from "@/types/thread";
+import { UserThreadsT } from "@/types/user";
+import { CommunityThreadsT } from "@/types/community";
 interface ThreadsTabT {
-  currentUserId: string;
   accountId: string;
   accountType: "community" | "user";
+  currentUserId: string;
 }
 
 const ThreadsTab: React.FC<ThreadsTabT> = async ({
@@ -18,24 +19,30 @@ const ThreadsTab: React.FC<ThreadsTabT> = async ({
   accountType,
   currentUserId,
 }) => {
-  let data: any;
+  if (!accountId) return redirect("/");
 
-  if (accountType === "community")
-    data = await fetchCommunityPosts({ communityId: accountId });
-  else if (accountType === "user")
-    data = await getUserThreads({ userId: accountId });
-
-  if (!data) return redirect("/");
+  const data: UserThreadsT | CommunityThreadsT | null =
+    accountType === "community"
+      ? ((await fetchCommunityPosts({
+          communityId: accountId,
+        })) as CommunityThreadsT)
+      : accountType === "user"
+      ? ((await getUserThreads({ userId: accountId })) as UserThreadsT)
+      : null;
 
   return (
     <section className="mt-9 flex flex-col gap-10">
-      {data.threads.map((thread: AllThreadT) => (
-        <ThreadCard
-          key={thread._id}
-          currentUserId={currentUserId}
-          thread={thread}
-        />
-      ))}
+      {data ? (
+        data.threads.map((thread) => (
+          <ThreadCard
+            key={thread._id}
+            thread={thread}
+            currentUserId={currentUserId}
+          />
+        ))
+      ) : (
+        <p>There are no threads</p>
+      )}
     </section>
   );
 };
